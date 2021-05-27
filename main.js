@@ -57,4 +57,4 @@ async function handleCommand(message) {
   }
 }
 
-client.login('ODQ3MjQ3OTc1MzM1NzIzMDQ4.YK7TKg.8r4DPpANGxGlCw3WDbQb5fCZobg');
+client.login('token');
