@@ -6,6 +6,7 @@
 
 // let form  = document.getElementById('send');
 // var pos = require('pos');
+require('dotenv').config();
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -56,5 +57,5 @@ async function handleCommand(message) {
     }
   }
 }
-
-client.login('token');
+console.log(process.env.BOT_LOGIN)
+client.login(process.env.BOT_LOGIN);

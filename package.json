@@ -12,6 +12,7 @@
     "bn.js": "^0.15.0",
     "browserify": "^17.0.0",
     "discord.js": "^12.5.3",
+    "dotenv": "^10.0.0",
     "miller-rabin": "^1.1.1",
     "pos": "^0.4.2"
   }
