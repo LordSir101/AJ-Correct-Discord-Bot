@@ -57,5 +57,4 @@ async function handleCommand(message) {
     }
   }
 }
-console.log(process.env.BOT_LOGIN)
 client.login(process.env.BOT_LOGIN);

@@ -15,7 +15,7 @@ module.exports = {
         var tag = taggedWord[1];
 
         //Changes the word if it matches a specific criteria
-        taggedWords[i] = modifyWord(word, tag, taggedWords[i]);
+        taggedWords[i] = modifyWord(word, tag, taggedWords[i], taggedWords);
     }
 
     taggedWords = spellCheck(taggedWords);
@@ -26,8 +26,19 @@ module.exports = {
   }
 }
 
-function modifyWord(word, tag, wordTag){
+function modifyWord(word, tag, wordTag, words){
   //mark any special words as modified so the don't get mispelled by spellcheck()
+
+  let positiveAdjvs = ['good', 'great', 'amazing', 'awesome', 'cool'];
+  let posAdjvsReplace = ['pog', 'poggers', 'pawg'];
+
+  //replace positive adjectives like good with pog
+  if(positiveAdjvs.includes(word.toLowerCase())){
+    if(tag == 'JJ'){
+      wordTag[0] = posAdjvsReplace[Math.floor(Math.random() * 3)];
+      wordTag[1] = 'modified';
+    }
+  }
 
   //Check for nouns
   if(tag == 'NNP'){
@@ -47,7 +58,61 @@ function modifyWord(word, tag, wordTag){
     wordTag[1] = 'modified';
   }
 
+  //checks if sentence contains a question mark
+  const isQuestion = (element) => areEqual(element, [ '?', '.' ]) == true;
+
+  //------check for key questions---------
+  if(words.some(isQuestion)){
+    if(word.toLowerCase() == 'wanna'){
+      wordTag[0] = 'tryna';
+      wordTag[1] = 'modified';
+    }
+    //look for 'want to'
+    if(word.toLowerCase() == 'want'){
+      let idx = words.indexOf(wordTag)
+      if(words[idx + 1][0] == 'to'){
+        wordTag[0] = 'tryna';
+        wordTag[1] = 'modified';
+        words[idx + 1][0] = '';
+      }
+    }
+    //look for a phrase similar to: 'would you like to?'
+    if(word.toLowerCase() == 'would' || word.toLowerCase() == 'do'){
+      let idx = words.indexOf(wordTag)
+
+      try{
+        if(words[idx + 1][0] == 'you'){
+          if(words[idx + 2][0] == 'want' || words[idx + 2][0] == 'like'){
+            if(words[idx + 3][0] == 'to'){
+              wordTag[0] = 'tryna';
+              wordTag[1] = 'modified';
+              words[idx + 1][0] = '';
+              words[idx + 2][0] = '';
+              words[idx + 3][0] = '';
+            }
+          }
+          else if(words[idx + 2][0] == 'wanna'){
+            wordTag[0] = 'tryna';
+            wordTag[1] = 'modified';
+            words[idx + 1][0] = '';
+            words[idx + 2][0] = '';
+          }
+        }
+      }
+      //If there is an index err, the phrase is not in the message
+      catch(err){
+      }
+
+    }
+  }
   return wordTag
+}
+
+function areEqual(a, b){
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
 }
 
 //Will randomly select words to misspell
@@ -174,7 +239,7 @@ function modifyQuestions(words){
 function createString(words) {
   let response = "";
   for (var i = 0; i < words.length; i++){
-    if(words[i][1] == '.'){
+    if(words[i][1] == '.' || words[i][0] == ''){
       response += words[i][0];
     }
     else{
